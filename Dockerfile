@@ -34,6 +34,7 @@ COPY --from=frontend /app/frontend/dist ./public
 ENV NODE_ENV=production
 ENV PORT=8080
 EXPOSE 8080
+#good
 
 # Start backend (serves API + frontend build)
 CMD ["npm", "start"]
