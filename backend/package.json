@@ -4,6 +4,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "build": "cd ../frontend && npm install && npm run build && cp -r dist ../backend/public",
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "sync-db": "node src/scripts/sync.js"

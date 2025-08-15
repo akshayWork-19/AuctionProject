@@ -55,14 +55,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, 'public'); // ✅ works in Docker
-  app.use(express.static(publicPath));
-
+  app.use(express.static(path.join(__dirname, 'public')));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 }
-
 
 
 async function start() {
