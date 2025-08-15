@@ -13,7 +13,7 @@ import { notFound, errorHandler } from './middleware/error.js';
 // Models import to register with Sequelize (side-effect import)
 import './models/User.js';
 import './models/Auction.js';
-import './models/Bid.js';
+import './models/Bid.js'
 import './models/CounterOffer.js';
 import './models/Notification.js';
 

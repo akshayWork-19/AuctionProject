@@ -6,12 +6,18 @@ if (!DATABASE_URL) {
 }
 
 export const sequelize = new Sequelize(DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
+  development: {
+    username: "postgres",
+    password: "localpass",
+    database: "localdb",
+    host: "127.0.0.1",
+    dialect: "postgres"
   },
+  production: {
+    use_env_variable: "DATABASE_URL",
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: { require: true, rejectUnauthorized: false }
+    }
+  }
 });
