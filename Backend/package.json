@@ -1,0 +1,29 @@
+{
+  "name": "mini-auction-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "sync-db": "node src/scripts/sync.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "sequelize": "^6.37.3",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "@upstash/redis": "^1.31.6",
+    "@sendgrid/mail": "^8.1.0",
+    "pdfkit": "^0.15.0",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.4.5",
+    "dayjs": "^1.11.11",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.23.8",
+    "morgan": "^1.10.0"
+  }
+}
