@@ -5,7 +5,7 @@ FROM node:18 AS frontend
 WORKDIR /app/frontend
 
 # Install frontend dependencies
-COPY frontend/package*.json ./
+COPY frontend/package*.json
 RUN npm install
 
 # Copy frontend source and build
@@ -15,11 +15,11 @@ RUN npm run build
 # ===============================
 # 2. BACKEND BUILD STAGE
 # ===============================
-FROM node:18 AS backend
-WORKDIR /app/backend   # <-- fixed absolute path
+FROM node:18 AS Backend
+WORKDIR /app/Backend   # <-- fixed absolute path
 
 # Install backend dependencies
-COPY backend/package*.json ./
+COPY backend/package*.json 
 RUN npm install
 
 # Copy backend source code
