@@ -5,11 +5,11 @@ FROM node:18 AS frontend
 WORKDIR /app/frontend
 
 # Install frontend dependencies
-COPY frontend/package*.json ./        # <-- has destination
+COPY frontend/package*.json ./        
 RUN npm install
 
 # Copy frontend source and build
-COPY frontend/ ./                     # <-- has destination
+COPY frontend/ ./                     
 RUN npm run build
 
 # ===============================
@@ -19,11 +19,11 @@ FROM node:18 AS backend
 WORKDIR /app/backend
 
 # Install backend dependencies
-COPY backend/package*.json ./         # <-- has destination
+COPY backend/package*.json ./         
 RUN npm install
 
 # Copy backend source code
-COPY backend/ ./                      # <-- has destination
+COPY backend/ ./                      
 
 # Copy frontend build output into backend's public folder
 COPY --from=frontend /app/frontend/dist ./public
