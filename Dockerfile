@@ -10,7 +10,7 @@ RUN npm install
 
 # Copy frontend source and build
 COPY frontend/ ./
-RUN npm run build   # Vite build -> dist/
+RUN npm run build  # Vite → dist/
 
 # ===============================
 # 2. BACKEND BUILD STAGE
@@ -20,9 +20,9 @@ WORKDIR /app/backend
 
 # Install backend dependencies
 COPY backend/package*.json ./
-RUN npm install
+RUN npm install --production
 
-# Copy backend source code
+# Copy backend source
 COPY backend/ ./
 
 # Copy frontend build output into backend's public folder
@@ -34,7 +34,5 @@ COPY --from=frontend /app/frontend/dist ./public
 ENV NODE_ENV=production
 ENV PORT=8080
 EXPOSE 8080
-#good
 
-# Start backend (serves API + frontend build)
 CMD ["npm", "start"]
