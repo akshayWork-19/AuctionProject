@@ -27,7 +27,7 @@ COPY backend/ .
 
 # Copy frontend build output into backend's public folder
 COPY --from=frontend /app/frontend/dist ./public
-
+# now it'll work
 # ===============================
 # 3. RUN STAGE
 # ===============================
