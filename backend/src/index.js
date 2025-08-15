@@ -51,11 +51,6 @@ initSocket(server);
 // const __dirname = path.dirname(__filename);
 // app.use(express.static(path.join(__dirname, 'public')));
 
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-import express from 'express';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -65,6 +60,7 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../public', 'index.html'));
   });
 }
+
 
 
 async function start() {

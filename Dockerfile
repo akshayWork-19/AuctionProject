@@ -5,12 +5,12 @@ FROM node:18 AS frontend
 WORKDIR /app/frontend
 
 # Install frontend dependencies
-COPY frontend/package*.json ./        
+COPY frontend/package*.json ./
 RUN npm install
 
 # Copy frontend source and build
-COPY frontend/ ./                     
-RUN npm run build
+COPY frontend/ ./
+RUN npm run build   # Vite build -> dist/
 
 # ===============================
 # 2. BACKEND BUILD STAGE
@@ -19,11 +19,11 @@ FROM node:18 AS backend
 WORKDIR /app/backend
 
 # Install backend dependencies
-COPY backend/package*.json ./         
+COPY backend/package*.json ./
 RUN npm install
 
 # Copy backend source code
-COPY backend/ ./                      
+COPY backend/ ./
 
 # Copy frontend build output into backend's public folder
 COPY --from=frontend /app/frontend/dist ./public
@@ -35,5 +35,5 @@ ENV NODE_ENV=production
 ENV PORT=8080
 EXPOSE 8080
 
-# Start backend (serves both API & frontend)
+# Start backend (serves API + frontend build)
 CMD ["npm", "start"]
