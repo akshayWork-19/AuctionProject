@@ -16,7 +16,7 @@ RUN npm run build
 # 2. BACKEND BUILD STAGE
 # ===============================
 FROM node:18 AS backend
-WORKDIR /app/backend
+WORKDIR /app/backend   # <-- fixed absolute path
 
 # Install backend dependencies
 COPY backend/package*.json ./
@@ -27,7 +27,7 @@ COPY backend/ .
 
 # Copy frontend build output into backend's public folder
 COPY --from=frontend /app/frontend/dist ./public
-# now it'll work
+
 # ===============================
 # 3. RUN STAGE
 # ===============================
