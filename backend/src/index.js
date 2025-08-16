@@ -8,7 +8,9 @@ import { fileURLToPath } from 'url';
 import { sequelize } from './db.js';
 import { initSocket } from './services/socket.js';
 import { notFound, errorHandler } from './middleware/error.js';
+
 // Models
+// import './models/User.js';
 import './models/User.js';
 import './models/Auction.js';
 import './models/Bid.js';
@@ -27,7 +29,6 @@ const PORT = process.env.PORT || 8080;
 const ORIGIN = process.env.ORIGIN || 'http://localhost:5173';
 const DATABASE_URL = process.env.DATABASE_URL;
 
-// Safe log of env vars
 console.log('=== Environment Check ===');
 console.log('PORT:', PORT);
 console.log('ORIGIN:', ORIGIN);
@@ -40,11 +41,13 @@ console.log('=========================');
 const app = express();
 
 // CORS
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.RENDER_EXTERNAL_URL // Render sets this to your service URL
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://auctionproject-frontend.onrender.com' // change to your real Render frontend URL
-  ],
+  origin: allowedOrigins,
   credentials: true
 }));
 
@@ -61,22 +64,24 @@ app.use('/api/seller', seller);
 app.use('/api/notifications', notifications);
 app.use('/api/users', users);
 
-app.use(notFound);
-app.use(errorHandler);
-
-const server = http.createServer(app);
-initSocket(server);
-
 // Static frontend (for production)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, '../public')));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
   });
 }
+
+// Error handling
+app.use(notFound);
+app.use(errorHandler);
+
+// Server + sockets
+const server = http.createServer(app);
+initSocket(server);
 
 // Start function
 async function start() {
