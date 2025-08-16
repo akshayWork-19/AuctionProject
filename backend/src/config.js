@@ -1,5 +1,5 @@
-import 'dotenv/config';
-
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' }); // adjust path if needed
 export const PORT = process.env.PORT || 8080;
 export const ORIGIN = process.env.ORIGIN || 'http://localhost:5173';
 

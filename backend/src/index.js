@@ -1,39 +1,60 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-import { PORT, ORIGIN } from './config.js';
 import { sequelize } from './db.js';
 import { initSocket } from './services/socket.js';
 import { notFound, errorHandler } from './middleware/error.js';
-
-// Models import to register with Sequelize (side-effect import)
+// Models
 import './models/User.js';
 import './models/Auction.js';
-import './models/Bid.js'
+import './models/Bid.js';
 import './models/CounterOffer.js';
 import './models/Notification.js';
 
+// Routes
 import { auctions } from './routes/auctions.js';
 import { bids } from './routes/bids.js';
 import { seller } from './routes/seller.js';
 import { notifications } from './routes/notifications.js';
 import { users } from './routes/users.js';
 
+// Env vars
+const PORT = process.env.PORT || 8080;
+const ORIGIN = process.env.ORIGIN || 'http://localhost:5173';
+const DATABASE_URL = process.env.DATABASE_URL;
+
+// Safe log of env vars
+console.log('=== Environment Check ===');
+console.log('PORT:', PORT);
+console.log('ORIGIN:', ORIGIN);
+console.log('DATABASE_URL set:', !!DATABASE_URL);
+console.log('REDIS URL set:', !!process.env.UPSTASH_REDIS_URL);
+console.log('REDIS TOKEN set:', !!process.env.UPSTASH_REDIS_TOKEN);
+console.log('SENDGRID key set:', !!process.env.SENDGRID_API_KEY);
+console.log('=========================');
+
 const app = express();
-// app.use(cors({ origin: ORIGIN, credentials: true }));
+
+// CORS
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:8000'],
+  origin: [
+    'http://localhost:5173',
+    'https://auctionproject-frontend.onrender.com' // change to your real Render frontend URL
+  ],
   credentials: true
-}))
+}));
+
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Health check
 app.get('/health', (req, res) => res.json({ ok: true }));
 
+// API routes
 app.use('/api/auctions', auctions);
 app.use('/api/bids', bids);
 app.use('/api/seller', seller);
@@ -46,11 +67,7 @@ app.use(errorHandler);
 const server = http.createServer(app);
 initSocket(server);
 
-// Serve built frontend if exists (backend/public)
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// app.use(express.static(path.join(__dirname, 'public')));
-
+// Static frontend (for production)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -61,16 +78,22 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-
+// Start function
 async function start() {
   try {
+    if (!DATABASE_URL) {
+      console.warn('⚠ DATABASE_URL not set — starting without DB connection.');
+      server.listen(PORT, () => console.log(`Server running on :${PORT} (NO DB)`));
+      return;
+    }
     await sequelize.authenticate();
-    console.log('DB connected');
-    await sequelize.sync(); // in dev; for prod, use migrations
-    server.listen(PORT, () => console.log(`Server listening on :${PORT}`));
+    console.log('✅ DB connected');
+    await sequelize.sync();
+    server.listen(PORT, () => console.log(`Server running on :${PORT}`));
   } catch (e) {
-    console.error('Failed to start', e);
-    process.exit(1);
+    console.error('❌ Failed to connect to DB', e.message);
+    console.error('Starting server without DB connection...');
+    server.listen(PORT, () => console.log(`Server running on :${PORT} (NO DB)`));
   }
 }
 
